@@ -1,0 +1,10 @@
+<div>
+    <form action="" method="POST">
+        {% csrf_token %}
+        <label>Title:</label>
+        <input type="text" name="title" value="{{todos.title}}" id="title"><br>
+        <label>Description:</label>
+        <input type="text" name="description" value="{{todos.description}}" id="description">
+        <input type="submit" value="Update">
+    </form>
+</div>

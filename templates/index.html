@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Todo List</title>
+    <style>
+        /* Basic styling for completed items */
+        .completed-title {
+            text-decoration: line-through;
+            color: #888; /* Optional: grey out completed text */
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            background-color: #f9f9f9;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px; /* Space between items */
+        }
+        li p {
+            margin: 0;
+            flex-grow: 1; /* Allow title/description to take available space */
+        }
+        .button-link {
+            display: inline-block;
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+        .button-link:hover {
+            background-color: #0056b3;
+        }
+        a {
+             text-decoration: none;
+             color: inherit;
+        }
+         a:hover {
+            text-decoration: underline;
+        }
+         input[type="checkbox"] {
+            cursor: pointer;
+            transform: scale(1.2); /* Make checkbox slightly larger */
+        }
+    </style>
+</head>
+<body>
+    <h1>My Todo List</h1>
+    <a href="{% url 'add_todo' %}">Add new Todo</a>
+    <ul>
+        {% for todo in todos %}
+        <li data-pk="{{ todo.pk }}"> {# Add data-pk attribute here #}
+            {# Set checkbox state based on todo.completed #}
+            <input type="checkbox" class="completed-checkbox" {% if todo.completed %}checked{% endif %}>
+            {# Add class to title for styling #}
+            <p class="todo-title {% if todo.completed %}completed-title{% endif %}">{{ todo.title }}</p>
+            <p>{{ todo.description }}</p>
+            <a href="{% url 'update_todo' todo.pk %}" class="button-link">Update</a>
+            <a href="{% url 'delete_todo' todo.pk %}">Delete</a>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <script>
+        // Get all checkboxes with the class 'completed-checkbox'
+        const checkboxes = document.querySelectorAll('.completed-checkbox');
+
+        // Add an event listener to each checkbox
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                // Get the primary key from the parent li element's data-pk attribute
+                const todoPk = this.closest('li').dataset.pk;
+                // Get the corresponding title element
+                const todoTitle = this.closest('li').querySelector('.todo-title');
+                // Determine the new completed status
+                const isCompleted = this.checked;
+
+                // Toggle the 'completed-title' class on the title element immediately
+                if (isCompleted) {
+                    todoTitle.classList.add('completed-title');
+                } else {
+                    todoTitle.classList.remove('completed-title');
+                }
+
+                // Send an AJAX request to the backend to update the status
+                // You'll need to include CSRF token for POST requests
+                // This example assumes you have a way to get the CSRF token,
+                // e.g., from a cookie or a hidden input field.
+                // A common way in Django is to use {% csrf_token %} in a form
+                // and get its value, or get it from the cookie.
+                // For simplicity, let's assume you can get it like this:
+                const csrftoken = getCookie('csrftoken'); // You need to define getCookie function
+
+                fetch(`/toggle_complete/${todoPk}`, { // Use the correct URL path
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken // Include the CSRF token
+                    },
+                    body: JSON.stringify({ completed: isCompleted })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        // If the server response is not OK, revert the UI change
+                        this.checked = !isCompleted; // Revert checkbox state
+                        if (isCompleted) {
+                            todoTitle.classList.remove('completed-title');
+                        } else {
+                            todoTitle.classList.add('completed-title');
+                        }
+                        console.error('Failed to update todo status on the server.');
+                    }
+                    // You could optionally parse the response if the server sends back data
+                    // .then(data => { console.log(data); });
+                })
+                .catch(error => {
+                    // Handle network errors
+                    this.checked = !isCompleted; // Revert checkbox state
+                     if (isCompleted) {
+                        todoTitle.classList.remove('completed-title');
+                    } else {
+                        todoTitle.classList.add('completed-title');
+                    }
+                    console.error('Error sending update request:', error);
+                });
+            });
+        });
+
+        // Helper function to get CSRF cookie value
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+</body>
+</html>
