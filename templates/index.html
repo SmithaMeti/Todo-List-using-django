@@ -10,9 +10,11 @@
   </head>
   <body>
     <h1>My Todo List</h1>
-    <input type="text" placeholder="Search your todos" /><br />
+    <form action="" method="GET">
+      <input type="text" placeholder="Search your todos" name="q" value="{{filter}}"/><br />
+    </form>
     <button class="theme">🌙</button>
-    <a href="{% url 'add_todo' %}">Add new Todo</a>
+    <a href="{% url 'add_todo' %}" class="add-btn">Add new Todo</a> <br>
     <ul>
       {% for todo in todos %}
       <li data-pk="{{ todo.pk }}">
@@ -31,8 +33,10 @@
           href="{% url 'details' todo.pk %}"
           >{{ todo.title }}</a
         >
-        <a href="{% url 'delete_todo' todo.pk %}">Delete</a>
+        <a href="{% url 'delete_todo' todo.pk %}" class="delete">Delete</a>
       </li>
+      {% empty %}
+      <h1>No todos found</h1>
       {% endfor %}
     </ul>
     <input type="hidden" id="csrf-token" value="{{ csrf_token }}" />

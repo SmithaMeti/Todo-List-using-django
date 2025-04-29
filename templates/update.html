@@ -1,33 +1,9 @@
-<div class="todo-form-container">
-  <h2>Update Todo</h2>
-  <form class="todo-form" action="" method="POST">
-    {% csrf_token %}
-    <div class="form-group">
-      <label for="title">Title:</label>
-      <input type="text" name="title" value="{{todos.title}}" id="title" />
-    </div>
-    <div class="form-group">
-      <label for="description">Description:</label>
-      <input
-        type="text"
-        name="description"
-        value="{{todos.description}}"
-        id="description"
-      />
-    </div>
-    <div class="div-btn">
-      <input type="submit" value="Update" class="submit-btn" />
-    <a class="cancel-btn" href="{% url 'details' todos.pk %}">Cancel</a>
-    </div>
-  </form>
-</div>
 <style>
   .div-btn {
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
-  /* Form Container */
   .todo-form-container {
     max-width: 600px;
     margin: 2rem auto;
@@ -37,7 +13,6 @@
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   }
 
-  /* Form Title */
   .todo-form-container h2 {
     color: #2d3436;
     margin-bottom: 1.5rem;
@@ -45,7 +20,6 @@
     font-size: 1.8rem;
   }
 
-  /* Form Elements */
   .todo-form {
     display: flex;
     flex-direction: column;
@@ -92,7 +66,6 @@
     text-decoration: none;
   }
 
-  /* Submit Button */
   .submit-btn {
     background: #00b894;
     color: white;
@@ -112,7 +85,6 @@
     box-shadow: 0 4px 8px rgba(0, 184, 148, 0.3);
   }
 
-  /* Dark Mode Styles */
   .dark-mode .todo-form-container {
     background: #2d3436;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
@@ -134,7 +106,6 @@
     box-shadow: 0 0 0 3px rgba(0, 184, 148, 0.3);
   }
 
-  /* Responsive Design */
   @media (max-width: 768px) {
     .todo-form-container {
       padding: 1.5rem;
@@ -142,3 +113,26 @@
     }
   }
 </style>
+<div class="todo-form-container">
+  <h2>Update Todo</h2>
+  <form class="todo-form" action="" method="POST">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="title">Title:</label>
+      <input type="text" name="title" value="{{todos.title}}" id="title" />
+    </div>
+    <div class="form-group">
+      <label for="description">Description:</label>
+      <input
+        type="text"
+        name="description"
+        value="{{todos.description}}"
+        id="description"
+      />
+    </div>
+    <div class="div-btn">
+      <input type="submit" value="Update" class="submit-btn" />
+      <a class="cancel-btn" href="{% url 'details' todos.pk %}">Cancel</a>
+    </div>
+  </form>
+</div>

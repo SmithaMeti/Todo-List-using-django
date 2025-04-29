@@ -6,18 +6,26 @@ from django.http import JsonResponse
 import json
 # Create your views here.
 def todo_list(request):
-    todos = Todo.objects.all()
-    return render(request,'index.html',{'todos':todos})
+    filter_query = request.GET.get('q', '')
+    if filter_query:
+        todos = Todo.objects.filter(title__icontains = filter_query).order_by('-created_at')
+    else:
+        todos = Todo.objects.all().order_by('-created_at')
+
+    return render(request, 'index.html', {
+        'todos': todos,
+        'filter': filter_query
+    })
+
 
 def add_todo(request):
     if request.method == 'POST':
         title = request.POST['title']
         description = request.POST['description']
 
-        # if not title:
-        #     print('Title cannot be empty...!!!')
-        #     return render(request,'add_todo.html',{'error':'Title is required','title':title,'description':description})
-
+        if not title:
+            print('Title cannot be empty...!!!')
+            return render(request,'add_todo.html',{'error':'Title is required','title':title,'description':description})
         new_todo = Todo(
             title = title, description = description
         )
@@ -46,22 +54,6 @@ def delete_todo(request,pk):
     # if request.method == 'POST'
     todos.delete()
     return redirect('todo_list')
-
-# @require_POST 
-# def toggle_complete(request, pk):
-#     todo = Todo.objects.get(id=pk)
-#         # Parse the JSON body of the request
-#     data = json.loads(request.body)
-#     print(data)
-#     is_completed = data.get('completed')
-#     print(is_completed)
-#     if is_completed is not None:
-#         todo.completed = is_completed
-#         todo.save()
-#             # Return a success JSON response
-#         return JsonResponse({'status': 'success', 'completed': todo.completed})
-#     else:
-#         return JsonResponse({'status': 'error', 'message': 'Invalid data provided'}, status=400)
 
 
 @require_POST 
