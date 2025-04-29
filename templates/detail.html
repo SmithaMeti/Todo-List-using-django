@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Details</title>
+</head>
+<style>
+/* Modern Card Layout */
+.todo-detail-card {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* Header Style */
+.todo-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2d3436;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+/* Description Style */
+.todo-description {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #636e72;
+    margin-bottom: 2.5rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+/* Action Buttons Container */
+.todo-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+/* Base Button Style */
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+/* Update Button */
+.btn-update {
+    background: #00b894;
+    color: white;
+}
+
+.btn-update:hover {
+    background: #00a884;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 184, 148, 0.2);
+}
+
+/* Back Button */
+.btn-back {
+    background: #dfe6e9;
+    color: #2d3436;
+}
+
+.btn-back:hover {
+    background: #b2bec3;
+    transform: translateY(-2px);
+}
+
+/* Dark Mode Styles */
+.dark-mode .todo-detail-card {
+    background: #2d3436;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .todo-title {
+    color: #f5f6fa;
+    border-bottom-color: #3d4549;
+}
+
+.dark-mode .todo-description {
+    color: #b2bec3;
+    background: #3d4549;
+}
+
+.dark-mode .btn-back {
+    background: #3d4549;
+    color: #f5f6fa;
+}
+
+.dark-mode .btn-back:hover {
+    background: #4b5357;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .todo-detail-card {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+    
+    .todo-actions {
+        flex-direction: column;
+    }
+    
+    .action-btn {
+        width: 100%;
+    }
+}
+</style>
+<body>
+    <div class="todo-detail-card">
+        <p class="todo-title">{{todo.title}}</p>
+        <p class="todo-description">{{todo.description}}</p>
+        <div class="todo-actions">
+            <a href="{% url 'update_todo' todo.pk %}" class="action-btn btn-update">Update</a>
+            <a href="{% url 'todo_list'%}" class="action-btn btn-back">Back to List</a>
+        </div>
+    </div>
+</body>
+</html>

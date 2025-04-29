@@ -1,6 +1,7 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from .models import Todo
 from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import json
 # Create your views here.
@@ -35,7 +36,7 @@ def update_todo(request,pk):
         todos.title = new_title
         todos.description = new_description
         todos.save()
-        return redirect('todo_list')
+        return redirect('details', pk=todos.pk)
     else:
         return render(request,'update.html',{'todos':todos})
     
@@ -46,21 +47,42 @@ def delete_todo(request,pk):
     todos.delete()
     return redirect('todo_list')
 
+# @require_POST 
+# def toggle_complete(request, pk):
+#     todo = Todo.objects.get(id=pk)
+#         # Parse the JSON body of the request
+#     data = json.loads(request.body)
+#     print(data)
+#     is_completed = data.get('completed')
+#     print(is_completed)
+#     if is_completed is not None:
+#         todo.completed = is_completed
+#         todo.save()
+#             # Return a success JSON response
+#         return JsonResponse({'status': 'success', 'completed': todo.completed})
+#     else:
+#         return JsonResponse({'status': 'error', 'message': 'Invalid data provided'}, status=400)
+
+
 @require_POST 
 def toggle_complete(request, pk):
-    """
-    View to toggle the 'completed' status of a Todo item.
-    Expects a POST request with JSON body {'completed': true/false}.
-    """
-    todo = Todo.objects.get(id=pk)
-        # Parse the JSON body of the request
-    data = json.loads(request.body)
-    is_completed = data.get('completed')
-    if is_completed is not None:
-        todo.completed = is_completed
+    try:
+        # Get the data sent via AJAX
+        data = json.loads(request.body)
+        todo = Todo.objects.get(pk=pk)
+
+        # Update the 'completed' status in the database
+        todo.completed = data.get("completed", False)
         todo.save()
-            # Return a success JSON response
-        return JsonResponse({'status': 'success', 'completed': todo.completed})
-    else:
-        return JsonResponse({'status': 'error', 'message': 'Invalid data provided'}, status=400)
+
+        return JsonResponse({"success": True})
+    except Todo.DoesNotExist:
+        return JsonResponse({"error": "Todo not found"}, status=404)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
+
+
+def details(request,pk):
+    todo = Todo.objects.get(id=pk)
+    return render(request,'detail.html',{'todo':todo})
 
