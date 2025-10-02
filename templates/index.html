@@ -9,18 +9,25 @@
     <script src="{% static 'js/script.js' %}" defer></script>
   </head>
   <body>
-    <h1>My Todo List</h1>
+    <div class="header-container">
+      <h1>My Todo List</h1>
+      <button class="theme">🌙</button>
+    </div>
     <form action="" method="GET">
-      <input type="text" placeholder="Search your todos" name="q" value="{{filter}}"/><br />
+      <input
+        type="text"
+        placeholder="Search your todos"
+        name="q"
+        value="{{filter}}"
+      /><br />
     </form>
-    <button class="theme">🌙</button>
-    <a href="{% url 'add_todo' %}" class="add-btn">Add new Todo</a> <br>
+    <a href="{% url 'add_todo' %}" class="add-btn">Add new Todo</a> <br />
     <ul>
       {% for todo in todos %}
       <li data-pk="{{ todo.pk }}">
         <input
           type="checkbox"
-          class="completed-checkbox"
+          class="completed-checkbox {% if todo.completed %}hidden{% endif %}"
           {%
           if
           todo.completed

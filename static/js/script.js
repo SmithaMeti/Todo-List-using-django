@@ -27,35 +27,38 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-
 document.addEventListener("DOMContentLoaded", function () {
+  // --- Checkbox Logic (UPDATED for hiding checkbox only) ---
   const checkboxes = document.querySelectorAll(".completed-checkbox");
 
   checkboxes.forEach((checkbox) => {
-      checkbox.addEventListener("change", () => {
-          const li = checkbox.closest("li");
-          const pk = li.dataset.pk;
-          const isCompleted = checkbox.checked;
+    checkbox.addEventListener("change", () => {
+      const li = checkbox.closest("li");
+      const pk = li.dataset.pk;
+      const isCompleted = checkbox.checked;
 
-          // Update the class on the title
-          const title = li.querySelector(".todo-title");
-          title.classList.toggle("completed-title", isCompleted);
+      // This part stays the same: Update the strikethrough on the title
+      const title = li.querySelector(".todo-title");
+      title.classList.toggle("completed-title", isCompleted);
 
-          // Send AJAX request to update the backend
-          fetch(`/toggle_complete/${pk}/`, {  // Use /toggle_complete/${pk}/ here
-              method: "POST",
-              headers: {
-                  "Content-Type": "application/json",
-                  "X-CSRFToken": getCSRFToken(),
-              },
-              body: JSON.stringify({ completed: isCompleted }),
-          });
+      // This is the only new line needed!
+      // It adds the 'hidden' class if checked, and removes it if unchecked.
+      checkbox.classList.toggle("hidden", isCompleted);
+
+      // This part stays the same: Send the update to the backend.
+      fetch(`/toggle_complete/${pk}/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCSRFToken(),
+        },
+        body: JSON.stringify({ completed: isCompleted }),
       });
+    });
   });
 
   // Helper to get CSRF token from the hidden input
   function getCSRFToken() {
-      return document.getElementById("csrf-token").value;
+    return document.getElementById("csrf-token").value;
   }
 });
-
