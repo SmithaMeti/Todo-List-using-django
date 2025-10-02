@@ -1,0 +1,49 @@
+# --- Python / Django ---
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Local development database file
+# This is important! Do not commit your local database.
+db.sqlite3
+
+# Virtual environment
+# Replace 'venv' with the name of your virtual environment folder if it's different
+venv/
+env/
+.venv/
+
+# Environment variables
+# Never commit your .env file
+.env
+.env.*
+!.env.example
+
+# --- Node.js ---
+
+# Node modules folder
+# This can be huge and is always re-created using 'npm install'
+node_modules/
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# --- IDE / Editor specific ---
+
+# VSCode
+.vscode/
+# PyCharm
+.idea/
+
+# --- OS generated files ---
+
+# macOS
+.DS_Store
+# Windows
+Thumbs.db
